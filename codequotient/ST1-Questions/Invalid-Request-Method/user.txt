@@ -1,0 +1,1 @@
+{"name":"haruday","gender":"Male","age":19}
