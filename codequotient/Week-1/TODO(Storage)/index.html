@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>To-Do Local</title>
+
+        <link rel="stylesheet" href="./style.css" type="text/css">
+
+    </head>
+
+    <body>
+
+        <h1>TASK LIST</h1>
+
+        <p>
+
+        Add tasks to your list
+
+        by typing to the right and pressing enter.
+
+        You may then view pending tasks below.
+
+        </p>
+
+        <div class="parent-container">
+
+            <ul>
+
+            </ul>
+
+            <div class="textarea-container">
+
+                <textarea></textarea>
+
+                <button type="button" id="btn">Add Task</button>
+
+            </div>
+
+        </div>
+
+        <script>
+
+            const ul = document.querySelector('ul');
+
+            const textarea = document.querySelector('textarea');
+
+            textarea.value = '';
+
+            const btn = document.querySelector('#btn');
+
+
+
+
+            var taskObject = {};
+
+            var taskArray = [];
+
+            // initializing the taskCounter
+
+            var taskCounter = 1;
+
+
+
+            // append the already present tasks to document from local storage
+
+            window.addEventListener('load', () => {
+
+                if (localStorage.getItem('toDoList') && localStorage.getItem('toDoList') != '' && localStorage.getItem('toDoList') != '[]') {
+
+                    taskArray = JSON.parse(localStorage.getItem('toDoList'));
+
+                    taskArray.forEach((taskObj) => {
+
+                        console.log(taskObj);
+
+                        createTask(taskObj);
+
+                    });
+
+                    taskCounter = taskArray.length + 1;
+
+                }
+
+                else {
+
+                    showNoTaskText(true);
+
+                }
+
+            });
+
+
+            textarea.addEventListener('keypress', (e) => {
+
+                if(e.key == 'Enter') {
+
+                    e.preventDefault();
+
+                    btn.dispatchEvent(new CustomEvent('click'));
+
+                    return;
+
+                }
+
+            })
+
+
+            btn.addEventListener('click', () => {
+
+                if (textarea.value == '') return;
+
+                // none div is present
+
+                if (!tasksPresent()) {
+
+                    showNoTaskText(false);
+
+                }
+
+
+                //
+
+                    taskObject.taskNum = `Task ${taskCounter++}`;
+
+                taskObject.taskText = textarea.value;
+
+                textarea.value = '';
+
+                // retreiving from the local storage
+
+                if (localStorage.getItem('toDoList')) {
+
+                    taskArray = JSON.parse(localStorage.getItem('toDoList'));
+
+                }
+
+                // addending the newly added task
+
+                taskArray.push(taskObject);
+
+                createTask(taskObject);
+
+                // adding to the local storage;
+
+                localStorage.setItem('toDoList', JSON.stringify(taskArray));
+
+
+            })
+
+
+            // to delete the paragraph popup
+
+            document.body.addEventListener('dblclick', () => {
+
+                let taskShow = document.querySelector('.taskShow');
+
+                if (taskShow) {
+
+                    document.body.removeChild(taskShow);
+
+                }
+
+            })
+
+
+
+            // will create the task in the html page and store it in local storage
+
+            function createTask(taskObj) {
+
+                let li = document.createElement('li');
+
+                li.setAttribute('class', 'listElements')
+
+                //
+
+                    // container for buttons
+
+                let span = document.createElement('span');
+
+                //buttons
+
+                let chckbox = document.createElement('input');
+
+                chckbox.setAttribute('type', 'checkbox');
+
+                //
+
+                    let cross = document.createElement('img');
+
+                cross.setAttribute('src', './x-mark.png');
+
+                cross.classList.add("cross");
+
+                //
+
+                    let taskNumber = document.createElement('span');
+
+                taskNumber.setAttribute('class', 'task-text')
+
+                taskNumber.innerText = taskObj.taskNum;
+
+
+                span.innerText = taskObj.taskText;
+
+                span.append(chckbox, cross);
+
+                li.append(taskNumber, span);
+
+                ul.append(li);
+
+
+                // handling the task showing thing
+
+                taskNumber.addEventListener('click', () => {
+
+                    let taskShow = document.querySelector(".taskShow");
+
+                    if (taskShow) {
+
+                        taskShow.remove();
+
+                    }
+
+                    taskShow = document.createElement('p');
+
+                    taskShow.textContent = taskArray.find((tasks) => {
+
+                        return (taskNumber.innerText == tasks.taskNum);
+
+                    }).taskText;
+
+                    taskShow.classList.add("taskShow");
+
+                    document.body.appendChild(taskShow);
+
+                });
+
+
+                // handling the task deletion thing
+
+                cross.addEventListener('click', () => {
+
+                    let objectIndex = null;
+
+                    taskArray.forEach((tasks, index) => {
+
+                        // use the li span text to map to object in the local storage
+
+                        if (tasks.taskNum == li.firstChild.innerText)
+
+                            objectIndex = index;
+
+                    }
+
+                    );
+
+                    li.remove();
+
+                    // fixing the taskCounter;
+
+                    taskCounter = +(taskArray[objectIndex].taskNum.substr(5));
+
+                    // updating the task on web-page
+
+                    updateTasks(taskCounter);
+
+                    // deleting the object from the array later to be stored in local storage
+
+                    taskArray.splice(objectIndex, 1);
+
+                    //updating the local storage task objects taskNumber
+
+                    updateLocalStorage(objectIndex, taskCounter);
+
+
+                    //checks if tasks are present or not
+
+                    if (!tasksPresent()) {
+
+                        showNoTaskText(true);
+
+                    }
+
+
+                });
+
+
+                // handling the task done thing
+
+                chckbox.addEventListener('change', () => {
+
+                    chckbox.parentNode.parentNode.firstChild.classList.toggle('checked');
+
+                });
+
+            }
+
+            function updateLocalStorage(objectIndex, taskCounter) {
+
+                // renewing the task numbers of the tasks(objects) in the array
+
+                for (let i = objectIndex; i < taskArray.length; i++) {
+
+                    taskArray[i].taskNum = `Task ${taskCounter++}`;
+
+                }
+
+                // updating the local storage
+
+                localStorage.setItem('toDoList', JSON.stringify(taskArray));
+
+                return;
+
+            }
+
+
+
+            function updateTasks(taskNumber) {
+
+                const li_s = document.querySelectorAll('ul li .task-text');
+
+                for (let i = taskNumber - 1; i < li_s.length; i++) {
+
+                    li_s[i].innerText = "Task " + (i + 1);
+
+                }
+
+                return;
+
+            }
+
+
+            function tasksPresent() {
+
+                return (document.querySelector('.listElements'));
+
+
+            }
+
+
+            // function nonePresent() {
+
+                //    return(document.querySelector('#none'));
+
+                // }
+
+
+            function showNoTaskText(toShow) {
+
+                if (toShow) {
+
+                    const noTask = document.createElement('div');
+
+                    noTask.id = 'none';
+
+                    noTask.innerText = "NO TASK";
+
+                    ul.append(noTask);
+
+                    taskCounter = 1;
+
+
+                }
+
+                else {
+
+                    document.querySelector('#none').remove();
+
+                }
+
+                return;
+
+            }
+
+
+            // function emptyTaskList() {
+
+                //    let li_s = document.querySelectorAll('ul li');
+
+                //    li_s.forEach((li) => {
+
+                    //        console.log(li);
+
+                    //        ul.remove(li);
+
+                    //    })
+
+                // }
+
+            // things that has to be done -
+
+                /*
+
+                * fixing the delete button (not deleting from the local storage)(ig some refrencing problem)
+
+                * fixing the popup task
+
+                * To update the task list only when in-between task is deleted
+
+                */
+
+        </script>
+
+    </body>
+
+</html>
+
+
+
