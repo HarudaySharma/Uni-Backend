@@ -37,13 +37,13 @@ const app = http.createServer(async (req, res) =>{
 })
 
 //    give proper message at console "Server started..." 
-const PORT: string = "3001";
-app.listen(PORT, () => {
-    console.log("Server started");
-});
 
 //    if actually it started or give "unable to start server" if there is an issue in starting the server.
 app.on('error', () => {
     console.log("unable to start server ");
 });
 
+const PORT: string = "3001";
+app.listen(PORT, () => {
+    console.log("Server started");
+});
