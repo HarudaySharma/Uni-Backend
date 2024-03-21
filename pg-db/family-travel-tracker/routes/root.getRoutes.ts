@@ -1,8 +1,8 @@
 import { Response, Router } from "express";
-import { addCountry, addUser, resetVisited, userCountries } from "../controllers/root.controller.js";
 import pgPool from "../services/postgres.client.js"
 import { get_all_users_query, get_all_visited_countries_query, get_an_user_query } from "../queries/dbQueries.js";
-import { changeCurrenUserId, currentUserId } from "../globals/user.global.js";
+import { currentUserId } from "../globals/user.global.js";
+import { resetVisited } from "../controllers/root.controller.js";
 
 
 const router = Router();
@@ -19,8 +19,10 @@ router.get('/', async (req, res: Response) => {
         const {color} = currentUserQueryRes.rows[0];
 
         const users = allUsersQueryRes.rows.map(user => user);
+        console.log(visitedCountries);
         const country_codes = visitedCountries.rows.map((row) => row.country_code);
-        res.render("index.ejs", {
+        console.log(country_codes);
+        res.render("index", {
             countries: country_codes,
             total: country_codes.length,
             users: users,
@@ -37,9 +39,7 @@ router.get('/', async (req, res: Response) => {
     }
 });
 
-router.post('/add', addCountry);
-router.post('/user', userCountries);
-router.post('/new', addUser);
-router.get('/reset/:codeWord', resetVisited);
+// reset the visited countries of current user
+router.get('/user/reset/:codeWord', resetVisited);
 
 export default router;

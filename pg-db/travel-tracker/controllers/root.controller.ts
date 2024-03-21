@@ -52,7 +52,7 @@ export const addCountry = async (req: Request, res: Response) => {
         const visitedCountries = await pgClient.query(get_all_visited_countries_query());
         const country_codes = visitedCountries.rows.map((row) => row.country_code);
         if (Boolean(countries.rowCount)) {
-            res.render('index.ejs', {
+            res.render('index', {
                 countries: country_codes,
                 total: country_codes.length,
                 error: "country is already marked"
@@ -63,7 +63,7 @@ export const addCountry = async (req: Request, res: Response) => {
         const foundCountries = await pgClient.query(find_country_query(country));
         //if country not found
         if (!Boolean(foundCountries.rowCount)) {
-            res.render('index.ejs', {
+            res.render('index', {
                 countries: country_codes,
                 total: country_codes.length,
                 error: "country not found, Please Try again!"
@@ -76,7 +76,7 @@ export const addCountry = async (req: Request, res: Response) => {
         await pgClient.query(insert_into_visited_countries(country_name, country_code, id));
         // send the appropriate response to client
         country_codes.push(country_code);
-        res.render('index.js', {
+        res.render('index', {
             countries: country_codes,
             total: country_codes.length,
         })

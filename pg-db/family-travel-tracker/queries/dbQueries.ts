@@ -1,36 +1,38 @@
 import { QueryConfig } from "pg"
 
 
-export const reset_visited_countries = (): { text: string } => {
+export const reset_visited_countries = (userId: number): QueryConfig<(string | number)[]> => {
     return {
-        text: "DELETE FROM visited_countries"
+        text: "DELETE FROM visited_countries WHERE user_id = $1",
+        values: [userId]
     }
 }
 
 export const check_in_visted_countries_query = (countryId: number, userId: number): QueryConfig<(string | number)[]> => {
     return {
-        text: `SELECT * FROM visited_countries WHERE country_id = $1 AND user_id = $2`,
-        values: [countryId, userId]
+        text: `SELECT * FROM visited_countries WHERE country_id = $1 AND user_id = $2 ;`,
+        values: [+countryId, +userId]
     }
 }
 
-export const insert_into_visited_countries = (countryId: number, countryCode: string, userId: number): QueryConfig<(number | string )[]> => {
+export const insert_into_visited_countries = (countryId: number, countryCode: string, userId: number): QueryConfig<(number | string)[]> => {
+    console.log(countryId, countryCode, userId);
     return {
         text: "INSERT INTO visited_countries(country_code, country_id, user_id) VALUES($1, $2, $3);",
-        values: [countryId, +countryCode, userId]
+        values: [countryCode, countryId.toString(), userId.toString()]
     }
 }
 
 export const find_country_query = (country: string): QueryConfig<(string | number)[]> => {
     return {
-        text: `SELECT * FROM countries WHERE LOWER(country_name) LIKE '%' || $1 || '%'`,
+        text: `SELECT * FROM countries WHERE LOWER(country_name) LIKE '%' || $1 || '%' ORDER BY LENGTH(country_name)`,
         values: [country.toLowerCase()]
     }
 }
 
 export const get_all_visited_countries_query = (userId: number): QueryConfig<(string | number)[]> => {
     return {
-        text: "SELECT country_id FROM visited_countries WHERE user_id = $1;",
+        text: "SELECT * FROM visited_countries WHERE user_id = $1;",
         values: [userId]
     }
 }
@@ -51,7 +53,7 @@ export const get_an_user_query = (id: number): QueryConfig<(string | number)[]> 
 
 export const find_user_query = (userName: string): QueryConfig<(string | number)[]> => {
     return {
-        text: `SELECT * FROM users WHERE name is $1;`,
+        text: `SELECT * FROM users WHERE name = $1 ;`,
         values: [userName],
     }
 }

@@ -12,7 +12,7 @@ router.get('/', async (req, res: Response) => {
         pgClient = await pgPool.connect();
         const visitedCountries = await pgClient.query(get_all_visited_countries_query());
         const country_codes = visitedCountries.rows.map((row) => row.country_code);
-        res.render('index.ejs', {
+        res.render('index', {
             total: country_codes.length,
             countries: country_codes
         });
