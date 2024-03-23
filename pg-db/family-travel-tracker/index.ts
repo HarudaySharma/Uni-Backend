@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 
 import getRoutes from './routes/root.getRoutes.js'
-import postRoutes from './routes/root.Postroutes.js';
+import postRoutes from './routes/root.postRoutes.js'
 
 const app = express();
 const PORT = 3000;
@@ -12,8 +12,8 @@ app.use(express.static("public"));
 app.use(express.json());
 app.set('view engine', 'ejs');
 
-app.get('/', getRoutes);
-app.post('/', postRoutes);
+app.use('/', getRoutes);
+app.use('/', postRoutes);
 
 app.listen(PORT, async () => {
     console.log(`Server running on http://localhost:${PORT}`);

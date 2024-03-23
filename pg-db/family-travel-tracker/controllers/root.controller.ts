@@ -32,12 +32,10 @@ export const resetVisited = async (req: Request, res: Response) => {
     catch (err) {
         res.status(501).json({ message: "INTERNAL SERVER ERROR" });
         console.log(err);
-
     }
     finally {
         pgClient?.release();
     }
-
 }
 
 export const switchUser = async (req: Request, res: Response) => {
@@ -64,7 +62,6 @@ export const switchUser = async (req: Request, res: Response) => {
             users: users,
             color: color,
         });
-
     }
     catch (err) {
         res.status(501).json({ message: "INTERNAL SERVER ERROR" });
@@ -191,7 +188,6 @@ export const addCountry = async (req: Request, res: Response) => {
             total: country_codes.length,
         })
         return;
-
     }
     catch (err) {
         res.status(501).json({ message: "INTERNAL SERVER ERROR" });
