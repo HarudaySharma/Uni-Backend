@@ -1,0 +1,7 @@
+CREATE DATABASE IF NOT EXISTS permalist;
+
+CREATE TABLE IF NOT EXISTS todos (
+    id SERIAL,
+    title TEXT,
+    PRIMARY KEY(id)
+);
