@@ -1,0 +1,17 @@
+{
+  "name": "15-04-2004",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npx tsc -w & npx nodemon ./dist/server.js"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongoose": "^8.3.1",
+    "nodemon": "^3.1.0"
+  }
+}
