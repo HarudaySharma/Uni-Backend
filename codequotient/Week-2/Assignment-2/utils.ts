@@ -1,25 +1,33 @@
 import * as fs from "fs/promises";
+import path from "path";
 
-async function helper(path: string | URL, parentDir: string): Promise<string[]> {
+let i = 0;
+async function helper(dirPath: string | URL, parentDir: string): Promise<string[]> {
     const list: string[] = [];
     try {
-        const files = await fs.readdir(path, { withFileTypes: true });
-        for (const file of files) {
+        if (i > 3)
+            return [];
+        const files = await fs.readdir(dirPath, { withFileTypes: true });
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
             try {
-                const fileStats = await fs.lstat(file.path);
-                if (fileStats.isFile()) {
+                //const fileStats = await fs.lstat(file.path);
+                if (file.isFile()) {
                     list.push(`${file.name} is a file under ${parentDir} directory`);
                 }
-                else if (fileStats.isDirectory()) {
-                    const subList = await helper(file.path, file.name);
+                else if (file.isDirectory()) {
+                    i++;
+                    console.log(file.name)
+                    const subList = await helper(path.join(file.path, file.name), dirPath.toString());
                     list.push(...subList);
                 }
-            } catch (err) {
+            }
+            catch (err) {
                 console.error(`Error processing ${file.name}:`, err);
             }
         }
         return list;
-    } 
+    }
     catch (err) {
         throw err;
     }

@@ -1,6 +1,7 @@
 import multer, { Field, diskStorage } from 'multer'
 import path from "path";
 
+
 const storage = diskStorage({
     destination: (req, file, cb) => {
         const extname = path.extname(file.originalname).toLowerCase();

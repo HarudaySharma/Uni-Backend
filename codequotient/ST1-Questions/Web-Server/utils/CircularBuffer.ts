@@ -20,7 +20,7 @@ export class CircularBuffer implements CIRCULARBUFFER {
         await this.saveToFile();
     }
 
-    async saveToFile() {
+    private async saveToFile() {
         let start = (this.currentIndex + 1) % this.size;
         let end = this.currentIndex;
         const logs: REQLOG[] = [];

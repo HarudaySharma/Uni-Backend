@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+</head>
+<style>
+    body {
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+    #fileUploadForm {
+        width: fit-content;
+        margin: 0 auto;
+        background: lightgreen;
+        border: 3px solid black;
+    }
+
+    input[name='submit'] {
+        background: lightcyan;
+        color: black;
+    }
+</style>
+
+<body>
+    <form action="http://localhost:42010/api/upload" id='fileUploadForm' enctype="multipart/form-data" method="post">
+        <input type="file" name="gallery" multiple />
+        <input type="submit" name="submit" value="Submit">
+    </form>
+    <button id='show-gallery' type="button">SHOW</button>
+    <div id='gallery'>
+    </div>
+    <script src="./index.js">
+    </script>
+</body>
+
+</html>

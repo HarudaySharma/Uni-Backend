@@ -98,4 +98,4 @@ function copyDir() {
 //    })
 //
 //}
-copyDir();
+jpeg_to_txt();
